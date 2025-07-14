@@ -1,0 +1,9 @@
+apiVersion: mysql.presslabs.org/v1alpha1
+kind: MysqlRestore
+metadata:
+  labels:
+    app.kubernetes.io/name: mysql-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: mysqlrestore-sample
+spec:
+  # TODO(user): Add fields here

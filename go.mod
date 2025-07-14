@@ -2,6 +2,8 @@ module github.com/bitpoke/mysql-operator
 
 go 1.17
 
+toolchain go1.23.11
+
 require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/go-ini/ini v1.62.0

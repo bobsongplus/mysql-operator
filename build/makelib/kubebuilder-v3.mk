@@ -44,12 +44,12 @@ SETUP_ENVTEST_DOWNLOAD_URL ?= sigs.k8s.io/controller-runtime/tools/setup-envtest
 $(eval $(call tool.go.install,setup-envtest,v$(SETUP_ENVTEST_VERSION),$(SETUP_ENVTEST_DOWNLOAD_URL)))
 
 # kubebuilder download and install
-KUBEBUILDER_VERSION ?= 3.2.0
+KUBEBUILDER_VERSION ?= 4.5.0
 KUBEBUILDER_DOWNLOAD_URL ?= https://github.com/kubernetes-sigs/kubebuilder/releases/download/v$(KUBEBUILDER_VERSION)/kubebuilder_$(HOST_PLATFORM)
 $(eval $(call tool.download,kubebuilder,$(KUBEBUILDER_VERSION),$(KUBEBUILDER_DOWNLOAD_URL)))
 
 # controller-gen download and install
-CONTROLLER_GEN_VERSION ?= 0.7.0
+CONTROLLER_GEN_VERSION ?= 0.17.2
 CONTROLLER_GEN_DOWNLOAD_URL ?= sigs.k8s.io/controller-tools/cmd/controller-gen
 $(eval $(call tool.go.install,controller-gen,v$(CONTROLLER_GEN_VERSION),$(CONTROLLER_GEN_DOWNLOAD_URL)))
 

@@ -42,9 +42,10 @@ HOSTARCH := $(shell uname -m)
 ifeq ($(HOSTARCH),x86_64)
 HOSTARCH := amd64
 endif
-ifneq ($(HOSTARCH),amd64)
-	$(error build only supported on amd64 host currently)
-endif
+
+# ifneq ($(HOSTARCH),amd64)
+# 	$(error build only supported on amd64 host currently)
+# endif
 HOST_PLATFORM := $(HOSTOS)_$(HOSTARCH)
 
 # default target is build
@@ -101,7 +102,7 @@ endif
 
 # for convenience always build the linux platform when building on mac
 ifneq ($(HOSTOS),linux)
-BUILD_PLATFORMS += linux_amd64
+BUILD_PLATFORMS += linux_arm64
 endif
 
 else

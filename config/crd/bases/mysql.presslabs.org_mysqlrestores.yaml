@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.17.2
-  name: mysqlbackups.mysql.presslabs.org
+  name: mysqlrestores.mysql.presslabs.org
 spec:
   group: mysql.presslabs.org
   names:
-    kind: MysqlBackup
-    listKind: MysqlBackupList
-    plural: mysqlbackups
-    singular: mysqlbackup
+    kind: MysqlRestore
+    listKind: MysqlRestoreList
+    plural: mysqlrestores
+    singular: mysqlrestore
   scope: Namespaced
   versions:
     - name: v1alpha1
       schema:
         openAPIV3Schema:
-          description: MysqlBackup is the Schema for the mysqlbackups API
+          description: MysqlRestore is the Schema for the mysqlrestores API.
           properties:
             apiVersion:
               description: |-
@@ -37,41 +37,29 @@ spec:
             metadata:
               type: object
             spec:
-              description: MysqlBackupSpec defines the desired state of MysqlBackup
+              description: MysqlRestoreSpec defines the desired state of MysqlRestore.
               properties:
-                backupSecretName:
-                  description: |-
-                    BackupSecretName the name of secrets that contains the credentials to
-                    access the bucket. Default is used the secret specified in cluster.
-                  type: string
-                backupURL:
-                  description: |-
-                    BackupURL represents the URL to the backup location, this can be
-                    partially specifyied. Default is used the one specified in the cluster.
+                backupRef:
+                  description: BackupRef is the backup where the database will be restore.
                   type: string
                 clusterName:
-                  description: ClustterName represents the cluster for which to take backup
-                  type: string
-                remoteDeletePolicy:
-                  description: |-
-                    RemoteDeletePolicy the deletion policy that specify how to treat the data from remote storage. By
-                    default it's used softDelete.
+                  description: ClustterName represents the cluster for which to take restore
                   type: string
               required:
                 - clusterName
               type: object
             status:
-              description: MysqlBackupStatus defines the observed state of MysqlBackup
+              description: MysqlRestoreStatus defines the observed state of MysqlRestore.
               properties:
                 completed:
                   description: |-
-                    Completed indicates whether the backup is in a final state,
+                    Completed indicates whether the restore is in a final state,
                     no matter whether its' corresponding job failed or succeeded
                   type: boolean
                 conditions:
-                  description: Conditions represents the backup resource conditions list.
+                  description: Conditions represents the restore resource conditions list.
                   items:
-                    description: BackupCondition defines condition struct for backup resource
+                    description: RestoreCondition defines condition struct for backup resource
                     properties:
                       lastTransitionTime:
                         description: LastTransitionTime
@@ -101,4 +89,6 @@ spec:
           type: object
       served: true
       storage: true
+      subresources:
+        status: {}
   preserveUnknownFields: false

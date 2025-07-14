@@ -7,6 +7,25 @@ metadata:
     {{- include "mysql-operator.labels" . | nindent 4 }}
 rules:
 - apiGroups:
+    - ""
+  resources:
+    - configmaps
+    - events
+    - jobs
+    - persistentvolumeclaims
+    - pods
+    - pods/status
+    - secrets
+    - services
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
     - apps
   resources:
     - statefulsets
@@ -43,80 +62,18 @@ rules:
     - update
     - watch
 - apiGroups:
-    - ""
-  resources:
-    - configmaps
-    - events
-    - jobs
-    - persistentvolumeclaims
-    - pods
-    - secrets
-    - services
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - ""
-  resources:
-    - pods/status
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
     - mysql.presslabs.org
   resources:
     - mysqlbackups
     - mysqlbackups/finalizers
     - mysqlbackups/status
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - mysql.presslabs.org
-  resources:
     - mysqlclusters
     - mysqlclusters/finalizers
     - mysqlclusters/status
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - mysql.presslabs.org
-  resources:
     - mysqldatabases
     - mysqldatabases/finalizers
     - mysqldatabases/status
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - mysql.presslabs.org
-  resources:
+    - mysqlrestores
     - mysqlusers
     - mysqlusers/status
   verbs:
@@ -127,6 +84,20 @@ rules:
     - patch
     - update
     - watch
+- apiGroups:
+    - mysql.presslabs.org
+  resources:
+    - mysqlrestores/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - mysql.presslabs.org
+  resources:
+    - mysqlrestores/status
+  verbs:
+    - get
+    - patch
+    - update
 - apiGroups:
     - policy
   resources:

@@ -6,6 +6,7 @@ resources:
 - bases/mysql.presslabs.org_mysqlbackups.yaml
 - bases/mysql.presslabs.org_mysqlusers.yaml
 - bases/mysql.presslabs.org_mysqldatabases.yaml
+- bases/mysql.presslabs.org_mysqlrestores.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:

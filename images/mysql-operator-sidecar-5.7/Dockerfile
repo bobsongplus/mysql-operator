@@ -2,7 +2,10 @@
 #  Docker image for sidecar containers
 ###############################################################################
 
-FROM debian:buster-slim as sidecar
+
+
+
+FROM debian:bullseye-slim  as sidecar
 
 RUN groupadd -g 999 mysql
 RUN useradd -u 999 -r -g 999 -s /sbin/nologin \
@@ -10,10 +13,11 @@ RUN useradd -u 999 -r -g 999 -s /sbin/nologin \
 
 COPY rootfs/ /
 
-RUN apt-get update \
+RUN apt-get update -y \
     && apt-get install -y --no-install-recommends \
-        apt-transport-https ca-certificates unzip pigz wget gnupg \
+    apt-transport-https ca-certificates unzip pigz wget gnupg \
     && rm -rf /var/lib/apt/lists/*
+
 
 RUN export RCLONE_VERSION=1.57.0 \
     && gpg --import /etc/gpg-keys/rclone.gpg \
@@ -26,12 +30,20 @@ RUN export RCLONE_VERSION=1.57.0 \
     && chmod 755 /usr/local/bin/rclone \
     && rm -r rclone-*-linux-amd64 rclone-*-linux-amd64.zip
 
-RUN echo 'deb https://repo.percona.com/apt buster main' > /etc/apt/sources.list.d/percona.list
+# https://repo.percona.com/apt/dists/buster/ 看样子是有，但为什么安装不了
+#RUN echo 'deb https://repo.percona.com/apt buster main' > /etc/apt/sources.list.d/percona.list
 
 ARG XTRABACKUP_PKG=percona-xtrabackup-24
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        percona-toolkit ${XTRABACKUP_PKG} unzip default-mysql-client \
+RUN apt-get update -y \
+    && apt install curl -y \
+    && curl -O https://repo.percona.com/apt/percona-release_latest.generic_all.deb \
+    && apt install -y gnupg2 lsb-release ./percona-release_latest.generic_all.deb
+RUN apt update -y \
+    && percona-release setup pxb-80 -y \
+    && apt install default-mysql-client -y
+
+RUN apt install ${XTRABACKUP_PKG} percona-toolkit unzip -y \
+    && rm -rf ./percona-release_latest.generic_all.deb \
     && rm -rf /var/lib/apt/lists/*
 
 USER mysql

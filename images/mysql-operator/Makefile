@@ -14,5 +14,6 @@ img.build:
 		--platform $(IMAGE_PLATFORM) \
 		-t $(IMAGE) \
 		--build-arg ARCH=$(ARCH) \
+		--network host \
 		$(IMAGE_TEMP_DIR)
 	@$(OK) docker build $(IMAGE)

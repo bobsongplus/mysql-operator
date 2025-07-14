@@ -2,14 +2,14 @@
 PROJECT_NAME := mysql-operator
 PROJECT_REPO := github.com/bitpoke/mysql-operator
 
-PLATFORMS := darwin_amd64 linux_amd64
+PLATFORMS := darwin_amd64 linux_amd64 linux_arm64
 include build/makelib/common.mk
 
 GO111MODULE=on
 GO_STATIC_PACKAGES = $(GO_PROJECT)/cmd/mysql-operator $(GO_PROJECT)/cmd/mysql-operator-sidecar $(GO_PROJECT)/cmd/orc-helper
-GO_SUPPORTED_VERSIONS = 1.17
-GOFMT_VERSION = 1.17
-GOLANGCI_LINT_VERSION = 1.42.1
+GO_SUPPORTED_VERSIONS = 1.23.11
+GOFMT_VERSION = 1.23.11
+GOLANGCI_LINT_VERSION = 1.63.4
 GO_LDFLAGS += \
 	       -X $(GO_PROJECT)/pkg/version.buildDate=$(BUILD_DATE) \
 	       -X $(GO_PROJECT)/pkg/version.gitVersion=$(VERSION) \
@@ -41,7 +41,7 @@ DOCKER_REGISTRY ?= docker.io/bitpoke
 IMAGES ?= mysql-operator mysql-operator-orchestrator mysql-operator-sidecar-5.7 mysql-operator-sidecar-8.0
 include build/makelib/image.mk
 
-KUBEBUILDER_ASSETS_VERSION := 1.21.2
+KUBEBUILDER_ASSETS_VERSION := 1.28.0
 GEN_CRD_OPTIONS := crd:crdVersions=v1,preserveUnknownFields=false
 include build/makelib/kubebuilder-v3.mk
 
@@ -53,7 +53,7 @@ include build/makelib/kubebuilder-v3.mk
 		done
 .kubebuilder.manifests.done: .kubebuilder.fix-preserve-unknown-fields
 
-include build/makelib/helm.mk
+#include build/makelib/helm.mk
 
 .PHONY: .kubebuilder.update.chart
 .kubebuilder.update.chart: kubebuilder.manifests $(YQ)
@@ -80,24 +80,24 @@ include build/makelib/helm.mk
 	@$(OK) updating helm RBAC and CRDs from kubebuilder manifests
 .generate.run: .kubebuilder.update.chart
 
-.PHONY: .helm.package.prepare.mysql-operator
-.helm.package.prepare.mysql-operator:  $(YQ)
-	@$(INFO) prepare mysql-operator chart $(HELM_CHART_VERSION)
-	@$(SED) 's/:latest/:$(VERSION)/g' $(HELM_CHARTS_WORK_DIR)/mysql-operator/Chart.yaml
-	@$(OK) prepare mysql-operator chart $(HELM_CHART_VERSION)
-.helm.package.run.mysql-operator: .helm.package.prepare.mysql-operator
+# .PHONY: .helm.package.prepare.mysql-operator
+# .helm.package.prepare.mysql-operator:  $(YQ)
+# 	@$(INFO) prepare mysql-operator chart $(HELM_CHART_VERSION)
+# 	@$(SED) 's/:latest/:$(VERSION)/g' $(HELM_CHARTS_WORK_DIR)/mysql-operator/Chart.yaml
+# 	@$(OK) prepare mysql-operator chart $(HELM_CHART_VERSION)
+# .helm.package.run.mysql-operator: .helm.package.prepare.mysql-operator
 
-.PHONY: .helm.publish
-.helm.publish:
-	@$(INFO) publishing helm charts
-	@rm -rf $(WORK_DIR)/charts
-	@git clone -q git@github.com:bitpoke/helm-charts.git $(WORK_DIR)/charts
-	@cp $(HELM_OUTPUT_DIR)/*.tgz $(WORK_DIR)/charts/docs/
-	@git -C $(WORK_DIR)/charts add $(WORK_DIR)/charts/docs/*.tgz
-	@git -C $(WORK_DIR)/charts commit -q -m "Added $(call list-join,$(COMMA)$(SPACE),$(foreach c,$(HELM_CHARTS),$(c)-v$(HELM_CHART_VERSION)))"
-	@git -C $(WORK_DIR)/charts push -q
-	@$(OK) publishing helm charts
-.publish.run: .helm.publish
+# .PHONY: .helm.publish
+# .helm.publish:
+# 	@$(INFO) publishing helm charts
+# 	@rm -rf $(WORK_DIR)/charts
+# 	@git clone -q git@github.com:bitpoke/helm-charts.git $(WORK_DIR)/charts
+# 	@cp $(HELM_OUTPUT_DIR)/*.tgz $(WORK_DIR)/charts/docs/
+# 	@git -C $(WORK_DIR)/charts add $(WORK_DIR)/charts/docs/*.tgz
+# 	@git -C $(WORK_DIR)/charts commit -q -m "Added $(call list-join,$(COMMA)$(SPACE),$(foreach c,$(HELM_CHARTS),$(c)-v$(HELM_CHART_VERSION)))"
+# 	@git -C $(WORK_DIR)/charts push -q
+# 	@$(OK) publishing helm charts
+# .publish.run: .helm.publish
 
 CLUSTER_NAME ?= mysql-operator
 delete-environment:

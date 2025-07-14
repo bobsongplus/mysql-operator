@@ -12,6 +12,8 @@ img.build:
 	@docker buildx build $(BUILD_ARGS) \
 		--platform $(IMAGE_PLATFORM) \
 		-t $(IMAGE) \
+        --no-cache \
 		--build-arg ARCH=$(ARCH) \
+		--network host \
 		$(IMAGE_TEMP_DIR)
 	@$(OK) docker build $(IMAGE)
